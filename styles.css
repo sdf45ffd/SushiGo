@@ -47,11 +47,72 @@ header {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 h1 {
     color: var(--primary-color);
     font-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-options {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.switch-label {
+    font-size: 0.9rem;
+    color: var(--text-color);
 }
 
 .theme-toggle button {
@@ -75,12 +136,10 @@ h1 {
     box-shadow: 0 4px 6px var(--shadow-color);
     max-width: 600px;
     margin: 0 auto;
-    text-align: center;
 }
 
 .form-group {
     margin-bottom: 20px;
-    text-align: left;
 }
 
 .form-group label {
@@ -159,7 +218,7 @@ h1 {
 
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
     gap: 15px;
     margin-top: 20px;
 }
@@ -319,6 +378,29 @@ h1 {
     border-bottom: none;
 }
 
+.rules-section {
+    margin-top: 40px;
+}
+
+.rules-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.rule-card {
+    background-color: var(--background-color);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.rule-card h4 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
 @media (max-width: 768px) {
     .game-area {
         grid-template-columns: 1fr;
@@ -336,4 +418,29 @@ h1 {
     .card {
         height: 100px;
     }
+    
+    .rules-container {
+        grid-template-columns: 1fr;
+    }
+	
+}/* Add this to your CSS file or style section */
+.card {
+    width: 140px; /* Increased from ~150px */
+    height: 200px; /* Increased from ~200px */
+    padding: 15px; /* Increased padding */
+    margin: 1px;
+    font-size: 16px; /* Larger font */
+    line-height: 1.4;
 }
+
+.card-name {
+    font-size: 18px; /* Larger card names */
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.card-points {
+    font-size: 14px; /* Slightly larger description */
+    min-height: 60px; /* Ensure space for description */
+}
+
