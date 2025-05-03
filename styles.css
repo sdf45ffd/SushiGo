@@ -444,3 +444,6 @@ input:checked + .slider:before {
     min-height: 60px; /* Ensure space for description */
 }
 
+body.mobile-view .card {
+    width: 100%;
+}
