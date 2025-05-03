@@ -1,0 +1,339 @@
+:root {
+    --primary-color: #ff6b6b;
+    --secondary-color: #ff9e7d;
+    --accent-color: #ffd166;
+    --background-color: #f7fff7;
+    --text-color: #292f36;
+    --card-color: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --danger-color: #ef476f;
+    --success-color: #06d6a0;
+}
+
+[data-theme="dark"] {
+    --primary-color: #ff6b6b;
+    --secondary-color: #ff9e7d;
+    --accent-color: #ffd166;
+    --background-color: #292f36;
+    --text-color: #f7fff7;
+    --card-color: #1a1e24;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --danger-color: #ef476f;
+    --success-color: #06d6a0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    transition: all 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+}
+
+.theme-toggle button {
+    background-color: var(--accent-color);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle button:hover {
+    transform: scale(1.05);
+}
+
+.setup-screen {
+    background-color: var(--card-color);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.player-names {
+    margin: 20px 0;
+}
+
+.player-name-input {
+    margin-bottom: 10px;
+}
+
+.player-name-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.game-screen {
+    display: none;
+}
+
+.round-info {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.player-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.player-tab {
+    padding: 8px 15px;
+    background-color: var(--background-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.player-tab.active {
+    background-color: var(--accent-color);
+    font-weight: bold;
+}
+
+.game-area {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.card-selection, .scoring-area {
+    background-color: var(--card-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px var(--shadow-color);
+}
+
+.card.selected {
+    border: 3px solid var(--accent-color);
+    transform: translateY(-5px);
+}
+
+.card .card-name {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.card .card-points {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+}
+
+.card .count {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.score-display {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+}
+
+#roundScore, #totalScore {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.score-detail {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--text-color);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #ff5252;
+    transform: scale(1.02);
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #ffc43d;
+    transform: scale(1.02);
+}
+
+.btn-danger {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background-color: #d62839;
+    transform: scale(1.02);
+}
+
+.scoreboard {
+    margin-top: 40px;
+    background-color: var(--card-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.scoreboard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.scoreboard th, .scoreboard td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.scoreboard th {
+    background-color: var(--background-color);
+    font-weight: bold;
+}
+
+.scoreboard tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 768px) {
+    .game-area {
+        grid-template-columns: 1fr;
+    }
+    
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .theme-toggle {
+        margin-top: 15px;
+    }
+    
+    .card {
+        height: 100px;
+    }
+}
