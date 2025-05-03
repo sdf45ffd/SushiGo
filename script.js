@@ -811,3 +811,12 @@ function addRuleCard(title, rules) {
     
     rulesContainer.appendChild(ruleCard);
 }
+
+function adjustForMobile() {
+    const isMobile = window.innerWidth <= 480;
+    document.body.classList.toggle('mobile-view', isMobile);
+}
+
+window.addEventListener('resize', adjustForMobile);
+window.addEventListener('load', adjustForMobile);
+
