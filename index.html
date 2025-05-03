@@ -17,9 +17,7 @@
                     <span class="slider round"></span>
                 </label>
                 <span class="switch-label">Party Mode</span>
-                <div class="theme-toggle">
-                    <button id="themeBtn">🌙 Dark Mode</button>
-                </div>
+                <button id="themeBtn">🌙 Dark Mode</button>
             </div>
         </header>
         
@@ -61,28 +59,32 @@
                             <div id="scoreDetails"></div>
                         </div>
                     </div>
-                    <button id="nextPlayerBtn" class="btn-primary">Next Player</button>
-                    <button id="nextRoundBtn" class="btn-secondary">Next Round</button>
-                    <button id="resetBtn" class="btn-danger">Reset Selection</button>
+                    <div class="button-group">
+                        <button id="nextPlayerBtn" class="btn-primary">Next Player</button>
+                        <button id="nextRoundBtn" class="btn-secondary">Next Round</button>
+                        <button id="resetBtn" class="btn-danger">Reset Selection</button>
+                    </div>
                 </div>
             </div>
             
             <div class="scoreboard">
                 <h3>Scoreboard</h3>
-                <table id="scoreboardTable">
-                    <thead>
-                        <tr>
-                            <th>Player</th>
-                            <th>Round 1</th>
-                            <th>Round 2</th>
-                            <th>Round 3</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Scores will be added here -->
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table id="scoreboardTable">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>R1</th>
+                                <th>R2</th>
+                                <th>R3</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Scores will be added here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
             
             <div class="rules-section">
