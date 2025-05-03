@@ -1,7 +1,7 @@
 # Sushi Go Score
 
 A simple website to help track scores for the card game **Sushi Go!**  
-Hosted with GitHub Pages: [Click here to use it](https://sdf45ffd.github.io/sushigoscore/)
+Hosted with GitHub Pages: [Click here to use it](https://sdf45ffd.github.io/SushiGo/)
 
 ## 🎯 Features
 
@@ -11,7 +11,7 @@ Hosted with GitHub Pages: [Click here to use it](https://sdf45ffd.github.io/sush
 
 ## 🚀 How to Use
 
-1. Open the web app: [https://sdf45ffd.github.io/sushigoscore/](https://sdf45ffd.github.io/sushigoscore/)
+1. Open the web app: [https://sdf45ffd.github.io/SushiGo/](https://sdf45ffd.github.io/SushiGo/)
 2. Add player names
 3. Enter scores each round
 4. The app totals everything for you automatically
