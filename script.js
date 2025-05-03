@@ -7,7 +7,8 @@ const gameState = {
     scores: {},
     selectedCards: {},
     isPartyMode: false,
-    cardTypes: {}
+    cardTypes: {},
+    wasabiUsed: 0 // Track how many wasabi have been used
 };
 
 // Card data for both versions
@@ -188,6 +189,7 @@ function startGame() {
     // Initialize game
     gameState.currentPlayerIndex = 0;
     gameState.currentRound = 1;
+    gameState.wasabiUsed = 0;
     
     // Initialize UI
     updateRoundDisplay();
@@ -217,7 +219,7 @@ function updatePlayerTabs() {
                 gameState.currentPlayerIndex = index;
                 updatePlayerTabs();
                 updateCurrentPlayerDisplay();
-                resetCardSelection();
+                // Don't reset selection when switching players
             }
         });
         
@@ -246,6 +248,7 @@ function nextPlayer() {
     
     // Move to next player
     gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
+    gameState.wasabiUsed = 0; // Reset wasabi usage for new player
     
     // If we've looped back to the first player, check if we should move to next round
     if (gameState.currentPlayerIndex === 0) {
@@ -263,7 +266,6 @@ function nextPlayer() {
     }
     
     updatePlayerTabs();
-    resetCardSelection();
     updateScoreboard();
 }
 
@@ -279,6 +281,7 @@ function nextRound() {
     
     // Move to next round
     gameState.currentRound++;
+    gameState.wasabiUsed = 0; // Reset wasabi usage for new round
     
     if (gameState.currentRound > gameState.maxRounds) {
         // Game over - show final scores
@@ -297,7 +300,6 @@ function nextRound() {
     // Update UI
     updateRoundDisplay();
     updatePlayerTabs();
-    resetCardSelection();
     updateScoreboard();
 }
 
@@ -455,8 +457,15 @@ function addCardToGrid(card, category, subType = null) {
 }
 
 function selectCard(category, subType = null) {
-    if (subType) {
+    if (category === 'wasabi') {
+        gameState.selectedCards.wasabi++;
+    } else if (subType) {
         gameState.selectedCards[category][subType]++;
+        
+        // Apply wasabi if available
+        if (category === 'nigiri' && gameState.selectedCards.wasabi > gameState.wasabiUsed) {
+            gameState.wasabiUsed++;
+        }
     } else {
         gameState.selectedCards[category]++;
     }
@@ -499,6 +508,7 @@ function resetCardSelection() {
             gameState.selectedCards[category] = 0;
         }
     }
+    gameState.wasabiUsed = 0;
     
     updateCardDisplay();
     calculateScore();
@@ -541,7 +551,54 @@ function calculateScore() {
             }
         }
         
-        // Add other Party mode card calculations here...
+        // Appetizers
+        if (gameState.selectedCards.tempura !== undefined) {
+            const tempuraScore = calculateTempuraScore();
+            roundScore += tempuraScore;
+            if (tempuraScore > 0) {
+                scoreDetails.push({ name: "Tempura", value: tempuraScore });
+            }
+        }
+        
+        if (gameState.selectedCards.dumpling !== undefined) {
+            const dumplingScore = calculateDumplingScore();
+            roundScore += dumplingScore;
+            if (dumplingScore > 0) {
+                scoreDetails.push({ name: "Dumpling", value: dumplingScore });
+            }
+        }
+        
+        if (gameState.selectedCards.tofu !== undefined) {
+            const tofuScore = calculateTofuScore();
+            roundScore += tofuScore;
+            if (tofuScore > 0) {
+                scoreDetails.push({ name: "Tofu", value: tofuScore });
+            }
+        }
+        
+        if (gameState.selectedCards.onigiri !== undefined) {
+            const onigiriScore = calculateOnigiriScore();
+            roundScore += onigiriScore;
+            if (onigiriScore > 0) {
+                scoreDetails.push({ name: "Onigiri", value: onigiriScore });
+            }
+        }
+        
+        if (gameState.selectedCards.sashimi !== undefined) {
+            const sashimiScore = calculateSashimiScore();
+            roundScore += sashimiScore;
+            if (sashimiScore > 0) {
+                scoreDetails.push({ name: "Sashimi", value: sashimiScore });
+            }
+        }
+        
+        if (gameState.selectedCards.eel !== undefined) {
+            const eelScore = calculateEelScore();
+            roundScore += eelScore;
+            if (eelScore > 0) {
+                scoreDetails.push({ name: "Eel", value: eelScore });
+            }
+        }
     } else {
         // Classic mode scoring
         const makiScore = calculateMakiScore();
@@ -619,6 +676,7 @@ function calculateScore() {
 
 function calculateTotalScore() {
     let total = 0;
+    let total = 0;
     
     // Calculate Nigiri scores (including Wasabi bonuses)
     total += calculateNigiriScore().total;
@@ -653,23 +711,24 @@ function calculateTotalScore() {
 function calculateNigiriScore() {
     let total = 0;
     let details = [];
-    let wasabiCount = gameState.selectedCards.wasabi || 0;
-    
+    let wasabiAvailable = gameState.selectedCards.wasabi || 0;
+    let wasabiUsed = 0;
+
     // Process each nigiri type
     for (const type in gameState.selectedCards.nigiri) {
         let count = gameState.selectedCards.nigiri[type];
         let points = gameState.cardTypes.nigiri[type].points;
         
         // Apply wasabi to as many nigiri as possible
-        const wasabiUsed = Math.min(wasabiCount, count);
-        if (wasabiUsed > 0) {
-            total += wasabiUsed * points * 3;
+        const wasabiToUse = Math.min(wasabiAvailable - wasabiUsed, count);
+        if (wasabiToUse > 0) {
+            total += wasabiToUse * points * 3;
             details.push({ 
-                name: `${wasabiUsed} ${gameState.cardTypes.nigiri[type].name} with Wasabi`, 
-                value: wasabiUsed * points * 3 
+                name: `${wasabiToUse} ${gameState.cardTypes.nigiri[type].name} with Wasabi`, 
+                value: wasabiToUse * points * 3 
             });
-            wasabiCount -= wasabiUsed;
-            count -= wasabiUsed;
+            wasabiUsed += wasabiToUse;
+            count -= wasabiToUse;
         }
         
         // Add remaining nigiri without wasabi
@@ -687,16 +746,13 @@ function calculateNigiriScore() {
 
 function calculateMakiScore() {
     let total = 0;
-    
     if (gameState.selectedCards.maki) {
         // Calculate total maki icons
         const makiIcons = calculateMakiIcons();
-        
-        // Note: Actual maki scoring requires comparing with other players
-        // For now just return the total icons
+        // In a real game, this would compare with other players
+        // For now, we'll just show the total icons
         total = makiIcons;
     }
-    
     return { total };
 }
 
@@ -712,41 +768,40 @@ function calculateMakiIcons() {
 
 function calculateTemakiScore() {
     let total = 0;
-    
     if (gameState.selectedCards.temaki !== undefined) {
         const temakiCount = gameState.selectedCards.temaki || 0;
-        // Note: Actual temaki scoring requires comparing with other players
+        // In a real game, this would compare with other players
         total = temakiCount;
     }
-    
     return { total };
 }
 
 function calculateUramakiScore() {
     let total = 0;
-    
     if (gameState.selectedCards.uramaki !== undefined) {
         const uramakiCount = gameState.selectedCards.uramaki || 0;
-        // Note: Actual uramaki scoring requires comparing with other players
+        // In a real game, this would compare with other players
         total = uramakiCount;
     }
-    
     return { total };
 }
 
 function calculateSashimiScore() {
+    if (gameState.selectedCards.sashimi === undefined) return 0;
     const count = gameState.selectedCards.sashimi || 0;
     const sets = Math.floor(count / 3);
     return sets * 10;
 }
 
 function calculateTempuraScore() {
+    if (gameState.selectedCards.tempura === undefined) return 0;
     const count = gameState.selectedCards.tempura || 0;
     const sets = Math.floor(count / 2);
     return sets * 5;
 }
 
 function calculateDumplingScore() {
+    if (gameState.selectedCards.dumpling === undefined) return 0;
     const count = gameState.selectedCards.dumpling || 0;
     if (count === 0) return 0;
     if (count === 1) return 1;
@@ -754,6 +809,32 @@ function calculateDumplingScore() {
     if (count === 3) return 6;
     if (count === 4) return 10;
     return 15; // 5 or more
+}
+
+function calculateTofuScore() {
+    if (gameState.selectedCards.tofu === undefined) return 0;
+    const count = gameState.selectedCards.tofu || 0;
+    if (count === 1) return 2;
+    if (count === 2) return 6;
+    return 0; // 3+ tofu score 0
+}
+
+function calculateOnigiriScore() {
+    if (gameState.selectedCards.onigiri === undefined) return 0;
+    const count = gameState.selectedCards.onigiri || 0;
+    if (count === 1) return 1;
+    if (count === 2) return 4;
+    if (count === 3) return 9;
+    if (count === 4) return 16;
+    return 0; // Shouldn't happen in normal game
+}
+
+function calculateEelScore() {
+    if (gameState.selectedCards.eel === undefined) return 0;
+    const count = gameState.selectedCards.eel || 0;
+    if (count === 1) return 1;
+    if (count === 2) return 2;
+    return 0; // 3+ eel score 0
 }
 
 function updateRulesDisplay() {
@@ -783,7 +864,30 @@ function updateRulesDisplay() {
             addRuleCard("Uramaki", ["Race to 10 rolls", "1st: 8 points", "2nd: 5 points", "3rd: 2 points"]);
         }
         
-        // Add other Party mode rules here...
+        // Appetizers
+        if (gameState.selectedCards.tempura !== undefined) {
+            addRuleCard("Tempura", ["2 cards = 5 points"]);
+        }
+        
+        if (gameState.selectedCards.dumpling !== undefined) {
+            addRuleCard("Dumpling", ["1:1, 2:3, 3:6, 4:10, 5+:15"]);
+        }
+        
+        if (gameState.selectedCards.tofu !== undefined) {
+            addRuleCard("Tofu", ["1:2, 2:6, 3+:0"]);
+        }
+        
+        if (gameState.selectedCards.onigiri !== undefined) {
+            addRuleCard("Onigiri", ["Unique shapes: 1:1, 2:4, 3:9, 4:16"]);
+        }
+        
+        if (gameState.selectedCards.sashimi !== undefined) {
+            addRuleCard("Sashimi", ["3 cards = 10 points"]);
+        }
+        
+        if (gameState.selectedCards.eel !== undefined) {
+            addRuleCard("Eel", ["1:1, 2:2, 3+:0"]);
+        }
     } else {
         // Classic mode rules
         addRuleCard("Maki Rolls", ["Most icons: 6 points", "Second most: 3 points"]);
@@ -812,10 +916,31 @@ function addRuleCard(title, rules) {
     rulesContainer.appendChild(ruleCard);
 }
 
-function adjustForMobile() {
-    const isMobile = window.innerWidth <= 480;
-    document.body.classList.toggle('mobile-view', isMobile);
-}
+// Initialize the app
+document.addEventListener('DOMContentLoaded', function() {
+    // Theme toggle
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.addEventListener('click', toggleTheme);
+    
+    // Party mode toggle
+    const partyToggle = document.getElementById('partyToggle');
+    partyToggle.addEventListener('change', togglePartyMode);
+    
+    // Setup player count input
+    const playerCountInput = document.getElementById('playerCount');
+    playerCountInput.addEventListener('input', updatePlayerNameInputs);
+    
+    // Start game button
+    document.getElementById('startGameBtn').addEventListener('click', startGame);
+    
+    // Initialize with classic mode
+    togglePartyMode();
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeButton(savedTheme);
+});
 
 window.addEventListener('resize', adjustForMobile);
 window.addEventListener('load', adjustForMobile);
