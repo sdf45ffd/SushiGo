@@ -100,7 +100,7 @@ function updatePlayerNameInputs() {
 function startGame() {
     const playerCount = parseInt(document.getElementById('playerCount').value);
     if (playerCount < 3 || playerCount > 5) {
-        alert("Please choose between 3-5 players");
+        alert("Please choose between 2-5 players");
         return;
     }
     
